@@ -1,0 +1,40 @@
+services:
+  app:
+    build:
+      context: ./docker/php
+    container_name: 'php-fpm'
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+#    depends_on:
+#      - db
+
+#  web:
+#    image: nginx:1.28.0-alpine
+#    container_name: 'laravel-web'
+#    ports:
+#      - "8080:80"
+#    volumes:
+##      - ./:/var/www/html          # прокидываем путь к коду, чтобы обращаться к index.php, а в будущем передавать статику + swagger
+#      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+#    depends_on:
+#      - app
+#
+#  db:
+#    image: mysql:8.0-debian
+#    container_name: 'laravel-db'
+#    restart: always
+#    ports:
+#      - '3306:3306'
+#    environment:
+#      MYSQL_ROOT_PASSWORD: timur
+#      MYSQL_DATABASE: 'laravel'
+#      MYSQL_USER: 'laravel'
+#      MYSQL_PASSWORD: 'timur'
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+#
+#volumes:
+#  mysql-data:
+
+

@@ -5,6 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use src\domain\ReportParser;
 
 
 $dotenv = Dotenv::createImmutable(__DIR__);
@@ -16,16 +17,27 @@ if (!$token) {
 }
 
 $bot = new Nutgram($token);
+$parser = new ReportParser();
 
 $bot->onCommand('start', function (Nutgram $bot) {
     $bot->sendMessage("Bot is working!");
 });
 
-$bot->onMessage(function (Nutgram $bot) {
+//$bot->onMessage(function (Nutgram $bot) {
+//    $text = $bot->message()->text;
+//    var_dump('RAW MESSAGE:', $text);
+//
+//    $bot->sendMessage(
+//        text: $text,
+//        parse_mode: null // временно убери Markdown
+//    );
+//});
+
+$bot->onMessage(function (Nutgram $bot) use ($parser) {
     $text = $bot->message()->getText();
 
     $bot->sendMessage(
-        text: $text,
+        text: $parser->escapeMarkdown($text),
         parse_mode: ParseMode::MARKDOWN
     );
 });

@@ -37,7 +37,8 @@ $bot->onMessage(function (Nutgram $bot) use ($parser) {
     $text = $bot->message()->getText();
 
     $bot->sendMessage(
-        text: $parser->escapeMarkdown($text),
+//        text: $parser->escapeMarkdown($text),
+        text: $text,
         parse_mode: ParseMode::MARKDOWN
     );
 });

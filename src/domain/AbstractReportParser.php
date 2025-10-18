@@ -9,56 +9,23 @@ use src\domain\exceptions\DomainException;
 
 abstract class AbstractReportParser
 {
+    protected string $rowDelimiter = "\n";
+    protected string $innerDelimeter = " ";
 
-    //[task_id]{link}{title}{description}
-    protected string $rowDelimiter = "\n\n";
-    protected string $s = "\n\n";
+    abstract function parse(string $text): string;
 
-    //TODO Выбирать через '\n\n' каждый завершенный тикет
-    public function parseMultipleRows(string $text): array
-    {
-        $rows = explode($this->rowDelimiter, $text);
-        if (empty($rows)) {
-            if ($row = $this->parseSingleRow($text)) {
-                return $row;
-            }
-        }
-        return $rows;
-    }
+    protected abstract function parseMultipleRows(string $text): array;
+    protected abstract function parseSingleRow(string $text): array;
 
-    public function parseSingleRow(string $text): array
-    {
-        $row = explode("\n", $text);
-        if (empty($row)) {
-            throw new DomainException(
-                "Не удалось разбить сообщение на строки. Для конца строки используйте символ(ы) '{$this->rowDelimiter}'"
-            );
-        };
-        return $row;
-    }
 
-//    abstract function extractTaskId(string $pattern): string;
+    protected string $taskShortTitleRegex = "/HELP-\d+/";
+    protected string $taskTitleRegex = "/HELP-\d+/([^/]+)";
+    protected abstract function parseLinkText(string $row): string;
+    protected abstract function parseTitle(string $row): string;
+    protected abstract function parseLink(string $row): string;
+    protected abstract function parseDescription(string $row): string;
 
-    //TODO Выделять из ссылки "HELP-номер"
-    //TODO Форматирование "link"
 
-    //TODO Выделить название из строки
-    //TODO Транслитерация выделенного названия
-    //TODO Форматирование "title"
-
-    //TODO Экранирование переданного фрагмента
-    public function escapeMarkdown(string $text): string
-    {
-        $escapedText = '';
-
-        $specials = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
-        foreach (mb_str_split($text) as $char) {
-            if (in_array($char, $specials, true)) {
-                $escapedText .= '\\' . $char;
-            } else {
-                $escapedText .= $char;
-            }
-        }
-        return $escapedText;
-    }
+    protected array $escapeSymbols = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+    protected abstract function escapeMarkdown(string $text): string;
 }

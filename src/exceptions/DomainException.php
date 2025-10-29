@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace src\domain\exceptions;
+namespace src\exceptions;
 
 use Exception;
 

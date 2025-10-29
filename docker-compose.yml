@@ -1,12 +1,14 @@
 services:
   app:
     build:
-      context: ./docker/php
+      context: .
+      dockerfile: ./docker/php/Dockerfile
     container_name: 'php-cli'
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
     ports:
       - "9001:9001"
+    command: ["sh", "-c", "composer install && php index.php"]
 
 

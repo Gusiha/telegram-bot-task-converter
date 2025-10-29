@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace src\domain;
 
-use src\domain\exceptions\DomainException;
+use src\exceptions\DomainException;
 
 
 //TODO Декомпозировать класс (парсер, форматтер как минимум)

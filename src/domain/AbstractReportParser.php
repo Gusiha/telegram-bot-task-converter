@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace src\domain;
 
 
-use src\domain\exceptions\DomainException;
-
 abstract class AbstractReportParser
 {
     protected string $rowDelimiter = "\n";

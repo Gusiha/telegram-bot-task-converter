@@ -3,6 +3,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Dotenv\Dotenv;
+use SergiX44\Nutgram\Configuration;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 use src\domain\MarkdownEscaper;
@@ -17,7 +18,11 @@ if (!$token) {
     throw new Exception('Bot token not set');
 }
 
-$bot = new Nutgram($token);
+$configuration = new Configuration(
+    clientTimeout: 600
+);
+
+$bot = new Nutgram($token, $configuration);
 
 $bot->onCommand('start', function (Nutgram $bot) {
     $bot->sendMessage("Bot is working!");

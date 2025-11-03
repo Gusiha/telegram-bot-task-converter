@@ -69,13 +69,11 @@ class TelegramReportParser extends AbstractReportParser implements IParser
     {
         $parts = explode($this->innerDelimeter, $row);
 
-        foreach ($parts as $part) {
-            if (filter_var($part, FILTER_VALIDATE_URL)) {
-                return $part;
-            }
+        if (filter_var($parts[0], FILTER_VALIDATE_URL)) {
+            return $parts[0];
         }
 
-        throw new DomainException('Не найдена ссылка');
+        throw new DomainException('Ссылка не найдена/неверный формат');
     }
 
     /**

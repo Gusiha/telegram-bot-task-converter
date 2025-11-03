@@ -31,4 +31,30 @@ class TelegramReportParserTest extends TestCase
         $this->expectException(DomainException::class);
         $this->parser->parseLines($text);
     }
+
+    /**
+     * @dataProvider \src\tests\providers\TelegramReportParserDataProviders::getEmptyRows
+     */
+    public function testParseLinkThrowsExceptionOnEmptyRows(string $text): void
+    {
+        $this->expectException(DomainException::class);
+        $this->parser->parseLink($text);
+    }
+
+    /**
+     * @dataProvider \src\tests\providers\TelegramReportParserDataProviders::getTicketsWithInvalidUrl()
+     */
+    public function testParseLinkThrowsExceptionOnTicketsWithInvalidUrl(string $text): void
+    {
+        $this->expectException(DomainException::class);
+        $this->parser->parseLink($text);
+    }
+
+    /**
+     * @dataProvider \src\tests\providers\TelegramReportParserDataProviders::getValidTicket()
+     */
+    public function testParseLinkReturnsUrlOnValidTicket(string $text, string $expected): void
+    {
+        $this->assertSame($expected, $this->parser->parseLink($text));
+    }
 }

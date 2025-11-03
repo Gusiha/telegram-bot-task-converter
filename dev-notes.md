@@ -11,3 +11,10 @@
 ### Описание
 - После декомпозиции начал писать тесты для методов парсера, попутно изучая возможности PHPUnit
 - Написал тест для \src\domain\TelegramReportParser::parseLines
+- Немного изменил метод \src\domain\TelegramReportParser::parseLink и начал покрытие тестами
+- Понял, что провайдеров данных слишком много в TelegramReportParserTest.php, поэтому вынес в отдельный класс со static методами
+- Сделал Make файл с базовой командой для старта юнит-теста, чтобы каждый раз не залезать в контейнер, но оказалось, что на винде он не работает..., а от WSL я пароль забыл)
+- Понял что лучше писать тесты примерно в таком формате - *testParseLinesReturnsTrimmedRows()*, *testParseLinesThrowsExceptionOnEmptyRows()* 
+### TODO
+- Сменить пароль на WSL
+- 

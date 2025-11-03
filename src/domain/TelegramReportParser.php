@@ -71,7 +71,7 @@ class TelegramReportParser extends AbstractReportParser implements IParser
 
         foreach ($parts as $part) {
             if (filter_var($part, FILTER_VALIDATE_URL)) {
-                return $this->formatLink($part, $this->parseLinkText($part));
+                return $part;
             }
         }
 

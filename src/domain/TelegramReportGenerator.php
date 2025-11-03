@@ -6,6 +6,7 @@ namespace src\domain;
 
 use src\domain\abstractions\IFormatter;
 use src\domain\abstractions\IParser;
+use src\exceptions\DomainException;
 
 //TODO Создать класс Ticket
 class TelegramReportGenerator
@@ -21,19 +22,25 @@ class TelegramReportGenerator
 
     function generate(string $text): string
     {
-        $lines = $this->parser->parseLines($text);
+        $result = array();
+        try {
+            $lines = $this->parser->parseLines($text);
+            foreach ($lines as $line) {
+                $link = $this->parser->parseLink($line);
+                $title = $this->parser->parseTitle($line);
+                $description = $this->parser->parseDescription($line);
+                $linkText = $this->parser->parseLinkText($line);
 
-        foreach ($lines as $line) {
-            $link = $this->parser->parseLink($line);
-            $title = $this->parser->parseTitle($line);
-            $description = $this->parser->parseDescription($line);
-            $linkText = $this->parser->parseLinkText($line);
+                $formattedLink = $this->formatter->formatLink($link, $linkText);
+                $formattedTitle = $this->formatter->formatTitle($title);
+                $formattedDescription = $this->formatter->formatDescription($description);
+                $formattedLinkText = $this->formatter->formatDescription($description);
 
-            $formattedLink = $this->formatter->formatLink($link, $linkText);
-            $formattedTitle = $this->formatter->formatTitle($title);
-            $formattedDescription = $this->formatter->formatDescription($description);
-            $formattedLinkText = $this->formatter->formatDescription($description);
+                //TODO Сборка строки
+            }
+            return "";
+        } catch (DomainException $e) {
+            return $e->getMessage();
         }
-        throw new \Exception("Not implemented");
     }
 }

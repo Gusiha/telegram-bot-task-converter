@@ -5,25 +5,18 @@ declare(strict_types=1);
 namespace src\domain;
 
 use src\domain\abstractions\AbstractReportParser;
-use src\domain\abstractions\IFormatter;
 use src\domain\abstractions\IParser;
 use src\exceptions\DomainException;
 
 
-//TODO Декомпозировать класс (парсер, форматтер как минимум)
 //TODO После декомпозиции написать юнит-тесты
 //TODO После успешных юнит-тестов, сделать интеграционный
 //TODO Запустить бота
 //TODO Приветственное сообщение, которое расскажет о формате ввода
 //TODO Вывод ошибок (try/catch) как через контроллер
 
-class TelegramReportParser extends AbstractReportParser
+class TelegramReportParser extends AbstractReportParser implements IParser
 {
-
-    function __construct(IParser $parser, IFormatter $formatter)
-    {
-        parent::__construct($parser, $formatter);
-    }
 
     public function parseSingleRow(string $text): array
     {
@@ -66,20 +59,6 @@ class TelegramReportParser extends AbstractReportParser
         return $match[0][0];
     }
 
-
-    public function escapeMarkdown(string $text): string
-    {
-        $escapedText = '';
-
-        foreach (mb_str_split($text) as $char) {
-            if (in_array($char, $this->escapeSymbols, true)) {
-                $escapedText .= '\\' . $char;
-            } else {
-                $escapedText .= $char;
-            }
-        }
-        return $escapedText;
-    }
 
     /**
      * @param string $row
@@ -127,16 +106,21 @@ class TelegramReportParser extends AbstractReportParser
         throw new DomainException('Из ссылки не удалось вытянуть название тикета при парсинге');
     }
 
-    function parseLines(string $text): array
+    public function parseLines(string $text): array
     {
-        //TODO тут была раньше библиотека, надо донормализовать (двойные проблелы заменить хотя бы)
         $normalizedText = mb_trim($text);
-        $rows = explode($this->rowDelimiter, $normalizedText);
-
-        if (empty($rows) && $normalizedText !== '') {
-            return $this->parseSingleRow($normalizedText);
+        if ($normalizedText == "") {
+            throw new DomainException('Передана пустая строка');
         }
 
-        return $rows;
+        $rows = explode($this->rowDelimiter, $normalizedText);
+        $rowsWithoutWhitespaces = array_map(fn($row) => mb_trim($row), $rows);
+        $rowsWithText = array_filter($rowsWithoutWhitespaces, fn($row) => $row != "");
+
+        if (!count($rowsWithText)) {
+            throw new DomainException('Переданы пустые строки');
+        }
+
+        return $rowsWithText;
     }
 }

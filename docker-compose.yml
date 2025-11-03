@@ -9,6 +9,7 @@ services:
       - ./:/var/www/html
     ports:
       - "9001:9001"
+#    entrypoint: ["/var/www/html/docker/php/xdebug-entrypoint.sh"]
     command: ["sh", "-c", "composer install && php index.php"]
 
 

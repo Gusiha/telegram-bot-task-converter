@@ -5,11 +5,13 @@ require __DIR__ . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use src\domain\MarkdownEscaper;
 
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 $token = $_ENV['BOT_TOKEN'];
+$escaper = new MarkdownEscaper();
 
 if (!$token) {
     throw new Exception('Bot token not set');
@@ -33,12 +35,13 @@ $bot->onCommand('start', function (Nutgram $bot) {
 //    );
 //});
 
-$bot->onMessage(function (Nutgram $bot) {
+$bot->onMessage(function (Nutgram $bot, MarkdownEscaper $escaper) {
     $text = $bot->message()->getText();
+    var_dump(json_encode($text));
 
     $bot->sendMessage(
 //        text: $parser->escapeMarkdown($text),
-        text: $text,
+        text: $escaper->escapeMarkdown($text),
         parse_mode: ParseMode::MARKDOWN
     );
 });
